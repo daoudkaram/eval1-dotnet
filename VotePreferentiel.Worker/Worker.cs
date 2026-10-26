@@ -49,13 +49,14 @@ public sealed class Worker : BackgroundService
                 "Loaded {Count} ballots.",
                 voteModel.Votes.Count);
 
-            for (var i = 0; i < voteModel.Votes.Count; i++)
-            {
-                _logger.LogInformation(
-                    "Ballot {Number}: {Choices}",
-                    i + 1,
-                    string.Join(" > ", voteModel.Votes[i].Choices));
-            }
+            // to check if everyhting working like it should
+            //for (var i = 0; i < voteModel.Votes.Count; i++)
+            //{
+            //    _logger.LogInformation(
+            //        "Ballot {Number}: {Choices}",
+            //        i + 1,
+            //        string.Join(" > ", voteModel.Votes[i].Choices));
+            //}
 
             var winner = _voteCounter.GetWinner(voteModel);
             _logger.LogInformation("The winner is: {Winner}", winner);
