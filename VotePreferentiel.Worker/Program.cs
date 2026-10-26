@@ -9,6 +9,7 @@ builder.Services.AddHttpClient<VoteProvider>(client =>
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+builder.Services.AddSingleton<IVoteCounter, VoteCounter>();
 builder.Services.AddHostedService<VotePreferentiel.Worker.Worker>();
 
 var host = builder.Build();

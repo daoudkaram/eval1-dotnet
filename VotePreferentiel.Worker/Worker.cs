@@ -12,13 +12,17 @@ public sealed class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly IHostApplicationLifetime _lifetime;
 
+    private readonly IVoteCounter _voteCounter;
+
     public Worker(
         VoteProvider voteProvider,
+        IVoteCounter voteCounter,
         IConfiguration configuration,
         ILogger<Worker> logger,
         IHostApplicationLifetime lifetime)
     {
         _voteProvider = voteProvider;
+        _voteCounter = voteCounter;
         _configuration = configuration;
         _logger = logger;
         _lifetime = lifetime;
@@ -52,6 +56,9 @@ public sealed class Worker : BackgroundService
                     i + 1,
                     string.Join(" > ", voteModel.Votes[i].Choices));
             }
+
+            var winner = _voteCounter.GetWinner(voteModel);
+            _logger.LogInformation("The winner is: {Winner}", winner);
         }
         catch (OperationCanceledException)
             when (stoppingToken.IsCancellationRequested)
@@ -60,7 +67,7 @@ public sealed class Worker : BackgroundService
         }
         catch (Exception exception)
         {
-            _logger.LogError(exception, "Failed to load the votes.");
+            _logger.LogError(exception, "Failed to process the election.");
             Environment.ExitCode = 1;
         }
         finally
